@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pocket Sanctuary | Everyday Modern... But Why?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;600;700&display=swap');
+        
+        body { 
+            font-family: 'Nunito', sans-serif; 
+            background-color: #F4F2F0; /* Slightly warmer stone to make the white cards pop */
+            color: #4A4A4A;
+        }
+        h1, h2, h3, .serif { font-family: 'Lora', serif; }
+        
+        /* Deep brand color */
+        .text-brand-dark { color: #1A111A; } 
+        
+        /* Modern Tactile "Neumorphic/Glass" Cards */
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,1);
+            border-left: 1px solid rgba(255,255,255,1);
+            box-shadow: 8px 8px 24px rgba(0,0,0,0.03), -8px -8px 24px rgba(255,255,255,0.8);
+            transition: all 0.3s ease;
+        }
+        .glass-card:active { transform: scale(0.98); box-shadow: 4px 4px 12px rgba(0,0,0,0.02), -4px -4px 12px rgba(255,255,255,0.8); }
+
+        /* The Box Breathing Animation (4-4-4-4) */
+        @keyframes box-breathe {
+            0%   { transform: scale(1); opacity: 0.6; }      
+            25%  { transform: scale(1.6); opacity: 1; }      
+            50%  { transform: scale(1.6); opacity: 1; }      
+            75%  { transform: scale(1); opacity: 0.6; }      
+            100% { transform: scale(1); opacity: 0.6; }      
+        }
+        .animate-breathe { animation: box-breathe 16s infinite linear; }
+
+        /* Card Flip Mechanics */
+        .perspective { perspective: 1000px; }
+        .preserve-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        /* Horizontal Scroll for Card Deck */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Custom Checkbox */
+        input[type="checkbox"] { accent-color: #A3B1A6; width: 1.25rem; height: 1.25rem; border-radius: 0.375rem; cursor: pointer; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center p-4 md:p-12 overflow-x-hidden">
+
+    <!-- Header -->
+    <header class="text-center w-full max-w-md mb-8 mt-6">
+        <h2 class="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-3">Trigger Calm</h2>
+        <h1 class="text-4xl serif italic text-brand-dark drop-shadow-sm">Pocket Sanctuary</h1>
+        <p class="text-stone-500 mt-4 text-sm font-light px-4 leading-relaxed">A gentle place to land when the feelings get too big. Go at your own pace.</p>
+    </header>
+
+    <!-- The Interactive Deck -->
+    <main class="w-full max-w-md space-y-8 pb-12">
+
+        <!-- Tool 1: The Breath Pacer -->
+        <div class="glass-card rounded-[2rem] p-8 relative overflow-hidden">
+            <div class="absolute top-5 right-6 text-[10px] font-bold tracking-widest text-stone-300 uppercase">01</div>
+            <h3 class="text-2xl serif mb-1 text-brand-dark">The Box Breath</h3>
+            <p class="text-sm text-stone-500 mb-10 pr-6">Sync your breath with the circle. Inhale for 4, hold 4, exhale 4, hold 4.</p>
+            
+            <div class="flex flex-col items-center justify-center py-6">
+                <!-- Breathing Circle (Sage Green) -->
+                <div class="relative w-28 h-28 flex items-center justify-center">
+                    <div class="absolute w-16 h-16 bg-gradient-to-tr from-[#A3B1A6] to-[#C1CDC3] rounded-full animate-breathe mix-blend-multiply blur-[1px]"></div>
+                    <div class="absolute w-12 h-12 bg-[#8C9B90] rounded-full mix-blend-multiply opacity-60 shadow-inner"></div>
+                </div>
+                <p class="text-[10px] tracking-[0.2em] text-[#8C9B90] font-bold uppercase mt-12 opacity-80">Breathe with me</p>
+            </div>
+        </div>
+
+        <!-- Tool 2: The Flip Deck -->
+        <div class="w-full relative">
+            <div class="flex justify-between items-end mb-3 px-2">
+                <h3 class="text-xl serif text-brand-dark">Reframing Truths</h3>
+                <div class="flex items-center gap-2">
+                    <button onclick="scrollDeck('left')" class="p-2 bg-white/60 hover:bg-white shadow-sm border border-white rounded-full text-stone-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg></button>
+                    <button onclick="scrollDeck('right')" class="p-2 bg-white/60 hover:bg-white shadow-sm border border-white rounded-full text-stone-500 transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg></button>
+                </div>
+            </div>
+            
+            <div id="flip-deck-container" class="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory gap-4 pb-6 px-2 -mx-2 scroll-smooth">
+                
+                <!-- Card 1: Unfolding -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                    <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
+                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#F5E6E8] to-[#E8C5C8]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel overwhelmed...</span>
+                            <p class="text-xl serif text-stone-800 italic">"I'm falling apart. I've ruined everything."</p>
+                            <span class="text-[9px] uppercase tracking-widest text-[#D4A3A3] mt-8 font-bold animate-pulse">Tap to flip</span>
+                        </div>
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-[#E8C5C8] to-[#D4A3A3] rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center shadow-inner">
+                            <span class="text-[10px] uppercase tracking-widest text-white/90 font-bold mb-4">The Truth Is:</span>
+                            <p class="text-2xl serif text-brand-dark drop-shadow-sm">"I am unfolding, not falling apart."</p>
+                            <p class="text-xs text-brand-dark/70 mt-4 font-medium">Nothing is wrong with me... I'm processing.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Slow Down -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                    <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
+                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#E6EBE7] to-[#A3B1A6]/30 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel rushed...</span>
+                            <p class="text-xl serif text-stone-800 italic">"I have to fix this immediately."</p>
+                            <span class="text-[9px] uppercase tracking-widest text-[#8C9B90] mt-8 font-bold animate-pulse">Tap to flip</span>
+                        </div>
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-[#A3B1A6] to-[#8C9B90] rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center shadow-inner">
+                            <span class="text-[10px] uppercase tracking-widest text-white/90 font-bold mb-4">The Truth Is:</span>
+                            <p class="text-2xl serif text-brand-dark drop-shadow-sm">"It's okay to slow down."</p>
+                            <p class="text-xs text-brand-dark/70 mt-4 font-medium">This moment will not last forever. One step at a time.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Amazing -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                    <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
+                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#F5F2ED] to-[#D9D1C7]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel inadequate...</span>
+                            <p class="text-xl serif text-stone-800 italic">"I should be able to handle this better."</p>
+                            <span class="text-[9px] uppercase tracking-widest text-[#A89F93] mt-8 font-bold animate-pulse">Tap to flip</span>
+                        </div>
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-[#D9D1C7] to-[#C4B9AC] rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center shadow-inner">
+                            <span class="text-[10px] uppercase tracking-widest text-white/90 font-bold mb-4">The Truth Is:</span>
+                            <p class="text-2xl serif text-brand-dark drop-shadow-sm">"You're doing amazing."</p>
+                            <p class="text-xs text-brand-dark/70 mt-4 font-medium">The fact you're trying means you're doing a good job. Your feelings are safe here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Card 4: Breath -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                    <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
+                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#E6F0F5] to-[#BBD1DF]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When panic rises...</span>
+                            <p class="text-xl serif text-stone-800 italic">"I can't catch my breath. It's too much."</p>
+                            <span class="text-[9px] uppercase tracking-widest text-[#89ABC2] mt-8 font-bold animate-pulse">Tap to flip</span>
+                        </div>
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-[#BBD1DF] to-[#99B9CE] rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center shadow-inner">
+                            <span class="text-[10px] uppercase tracking-widest text-white/90 font-bold mb-4">The Truth Is:</span>
+                            <p class="text-2xl serif text-brand-dark drop-shadow-sm">"One breath at a time, then another."</p>
+                            <p class="text-xs text-brand-dark/70 mt-4 font-medium">You don't need to solve tomorrow. Just breathe for today.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Card 5: Pause -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                    <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
+                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#F3EBF5] to-[#D5C1DF]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When your mind races...</span>
+                            <p class="text-xl serif text-stone-800 italic">"I can't stop these spinning thoughts."</p>
+                            <span class="text-[9px] uppercase tracking-widest text-[#B59BBE] mt-8 font-bold animate-pulse">Tap to flip</span>
+                        </div>
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-[#D5C1DF] to-[#BC9BCA] rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center shadow-inner">
+                            <span class="text-[10px] uppercase tracking-widest text-white/90 font-bold mb-4">The Truth Is:</span>
+                            <p class="text-2xl serif text-brand-dark drop-shadow-sm">"Pause and come back to centre."</p>
+                            <p class="text-xs text-brand-dark/70 mt-4 font-medium">Your thoughts are clouds passing by. You are the sky.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Card 6: Explain -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                    <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
+                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#FCF4E6] to-[#F2DFB3]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel defensive...</span>
+                            <p class="text-xl serif text-stone-800 italic">"I need them to understand why I'm upset."</p>
+                            <span class="text-[9px] uppercase tracking-widest text-[#D4B97B] mt-8 font-bold animate-pulse">Tap to flip</span>
+                        </div>
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-gradient-to-br from-[#F2DFB3] to-[#E3C683] rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center shadow-inner">
+                            <span class="text-[10px] uppercase tracking-widest text-white/90 font-bold mb-4">The Truth Is:</span>
+                            <p class="text-2xl serif text-brand-dark drop-shadow-sm">"You don't have to explain to soothe."</p>
+                            <p class="text-xs text-brand-dark/70 mt-4 font-medium">Your feelings are valid, even if no one else understands them right now.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Tool 3: The 5-Senses Grounder -->
+        <div class="glass-card rounded-[2rem] p-8 relative">
+            <div class="absolute top-5 right-6 text-[10px] font-bold tracking-widest text-stone-300 uppercase">02</div>
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-2xl serif mb-1 text-brand-dark">Find Your Centre</h3>
+                    <p class="text-sm text-stone-500 pr-4">When the spiral starts, physically tap these to ground yourself in the room.</p>
+                </div>
+            </div>
+            
+            <div class="space-y-3">
+                <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
+                    <input type="checkbox">
+                    <span class="text-sm text-stone-700">Name 5 things you can <strong class="font-bold text-stone-900">see</strong></span>
+                </label>
+                <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
+                    <input type="checkbox">
+                    <span class="text-sm text-stone-700">Touch 4 <strong class="font-bold text-stone-900">textures</strong> around you</span>
+                </label>
+                <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
+                    <input type="checkbox">
+                    <span class="text-sm text-stone-700">Listen for 3 <strong class="font-bold text-stone-900">sounds</strong></span>
+                </label>
+                <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
+                    <input type="checkbox">
+                    <span class="text-sm text-stone-700">Notice 2 things you can <strong class="font-bold text-stone-900">smell</strong></span>
+                </label>
+                <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
+                    <input type="checkbox">
+                    <span class="text-sm text-stone-700">Acknowledge 1 thing you <strong class="font-bold text-stone-900">taste</strong></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Tool 4: Trigger Calm GPT Quick Link -->
+        <a href="https://chatgpt.com/g/g-69739d575ec88191a0dd7bbc4796dcfd-trigger-calm" target="_blank" class="block">
+            <div class="bg-gradient-to-br from-[#2D1B2E] to-[#1A111A] rounded-[2rem] p-8 shadow-[0_10px_30px_rgba(26,17,26,0.2)] flex items-center justify-between group transition-transform hover:scale-[1.02]">
+                <div class="pr-4">
+                    <h3 class="text-xl serif mb-1 text-white">Trigger Calm GPT</h3>
+                    <p class="text-sm text-white/70 font-light leading-relaxed">Need to talk it out? Open your private bot. No judgment, just a safe space.</p>
+                </div>
+                <!-- Pure CSS Recreation of the Custom Logo -->
+                <div class="shrink-0 relative w-16 h-16 bg-white rounded-full shadow-lg overflow-hidden flex items-center justify-center border-2 border-white/20">
+                    <div class="absolute w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-purple-300 top-[-10%] right-[-10%] mix-blend-multiply opacity-80"></div>
+                    <div class="absolute w-12 h-12 rounded-full bg-gradient-to-br from-yellow-100 to-orange-200 top-[0%] left-[-15%] mix-blend-multiply opacity-80"></div>
+                    <div class="absolute w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-cyan-200 bottom-[-10%] left-[5%] mix-blend-multiply opacity-80"></div>
+                    <div class="absolute w-12 h-12 rounded-full bg-gradient-to-br from-red-100 to-rose-200 bottom-[10%] right-[-10%] mix-blend-multiply opacity-80"></div>
+                </div>
+            </div>
+        </a>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-4 text-center pb-12 w-full">
+        <p class="serif italic text-stone-500 text-lg mb-6">You're ok, it's ok, everything is going to be ok.</p>
+        
+        <div class="flex flex-col items-center justify-center space-y-2 border-t border-stone-200/60 pt-8 max-w-[200px] mx-auto">
+            <p class="text-[10px] uppercase tracking-widest text-stone-400 font-bold">With you in the unfolding, Barb</p>
+            <p class="text-[9px] uppercase tracking-[0.2em] text-stone-400/70 font-bold">Everyday Modern... But Why?</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Smooth scroll for the flip deck
+        function scrollDeck(direction) {
+            const container = document.getElementById('flip-deck-container');
+            const cardWidth = container.clientWidth * 0.85; 
+            const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
