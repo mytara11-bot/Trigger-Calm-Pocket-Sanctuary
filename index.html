@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Pocket Sanctuary | Everyday Modern... But Why?</title>
@@ -11,15 +10,13 @@
         
         body { 
             font-family: 'Nunito', sans-serif; 
-            background-color: #F4F2F0; /* Slightly warmer stone to make the white cards pop */
+            background-color: #F4F2F0; 
             color: #4A4A4A;
         }
         h1, h2, h3, .serif { font-family: 'Lora', serif; }
         
-        /* Deep brand color */
         .text-brand-dark { color: #1A111A; } 
         
-        /* Modern Tactile "Neumorphic/Glass" Cards */
         .glass-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%);
             backdrop-filter: blur(10px);
@@ -30,7 +27,6 @@
         }
         .glass-card:active { transform: scale(0.98); box-shadow: 4px 4px 12px rgba(0,0,0,0.02), -4px -4px 12px rgba(255,255,255,0.8); }
 
-        /* The Box Breathing Animation (4-4-4-4) */
         @keyframes box-breathe {
             0%   { transform: scale(1); opacity: 0.6; }      
             25%  { transform: scale(1.6); opacity: 1; }      
@@ -40,27 +36,52 @@
         }
         .animate-breathe { animation: box-breathe 16s infinite linear; }
 
-        /* Card Flip Mechanics */
         .perspective { perspective: 1000px; }
         .preserve-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
         
-        /* Horizontal Scroll for Card Deck */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Custom Checkbox */
         input[type="checkbox"] { accent-color: #A3B1A6; width: 1.25rem; height: 1.25rem; border-radius: 0.375rem; cursor: pointer; }
+
+        /* Blends the white background of the uploaded graphic */
+        .blend-graphic { mix-blend-mode: multiply; }
     </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col items-center p-4 md:p-12 overflow-x-hidden">
 
+    <!-- HIDDEN AUDIO ELEMENTS -->
+    <!-- These will work perfectly once you upload the .mp3 files to your GitHub -->
+    <audio id="sound-chime" preload="auto">
+        <source src="chime.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="sound-tap" preload="auto">
+        <source src="tap.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Brown noise set to loop indefinitely -->
+    <audio id="sound-brown-noise" preload="auto" loop>
+        <source src="brown_noise.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Header -->
-    <header class="text-center w-full max-w-md mb-8 mt-6">
-        <h2 class="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-3">Trigger Calm</h2>
+    <header class="text-center w-full max-w-md mb-8 mt-6 flex flex-col items-center relative">
+        
+        <!-- The Uploaded Watercolor Graphic -->
+        <!-- Just name your image "logo.png" when you upload it to GitHub! -->
+        <img src="logo.png" alt="Unfolding Girl" class="w-40 h-40 blend-graphic opacity-90 mb-2 drop-shadow-sm transition-transform duration-700 hover:scale-105" onerror="this.style.display='none'">
+        
+        <h2 class="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-3 mt-4">Trigger Calm</h2>
         <h1 class="text-4xl serif italic text-brand-dark drop-shadow-sm">Pocket Sanctuary</h1>
         <p class="text-stone-500 mt-4 text-sm font-light px-4 leading-relaxed">A gentle place to land when the feelings get too big. Go at your own pace.</p>
+
+        <!-- NEW: Ambient Brown Noise Toggle -->
+        <button id="noise-toggle" onclick="toggleBrownNoise()" class="mt-6 px-5 py-2.5 rounded-full bg-stone-200/60 text-stone-600 text-[10px] font-bold uppercase tracking-widest hover:bg-stone-300 transition-all shadow-sm flex items-center gap-2 active:scale-95">
+            <span class="text-sm">🎧</span> Brown Noise: Off
+        </button>
     </header>
 
     <!-- The Interactive Deck -->
@@ -95,7 +116,7 @@
             <div id="flip-deck-container" class="flex overflow-x-auto hide-scrollbar snap-x snap-mandatory gap-4 pb-6 px-2 -mx-2 scroll-smooth">
                 
                 <!-- Card 1: Unfolding -->
-                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="flipCardAndPlaySound(this)">
                     <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
                         <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#F5E6E8] to-[#E8C5C8]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
                             <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel overwhelmed...</span>
@@ -111,7 +132,7 @@
                 </div>
 
                 <!-- Card 2: Slow Down -->
-                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="flipCardAndPlaySound(this)">
                     <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
                         <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#E6EBE7] to-[#A3B1A6]/30 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
                             <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel rushed...</span>
@@ -127,7 +148,7 @@
                 </div>
 
                 <!-- Card 3: Amazing -->
-                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="flipCardAndPlaySound(this)">
                     <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
                         <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#F5F2ED] to-[#D9D1C7]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
                             <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel inadequate...</span>
@@ -142,8 +163,8 @@
                     </div>
                 </div>
 
-                <!-- NEW: Card 4: Breath -->
-                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                <!-- Card 4: Breath -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="flipCardAndPlaySound(this)">
                     <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
                         <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#E6F0F5] to-[#BBD1DF]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
                             <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When panic rises...</span>
@@ -158,8 +179,8 @@
                     </div>
                 </div>
 
-                <!-- NEW: Card 5: Pause -->
-                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                <!-- Card 5: Pause -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="flipCardAndPlaySound(this)">
                     <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
                         <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#F3EBF5] to-[#D5C1DF]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
                             <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When your mind races...</span>
@@ -174,8 +195,8 @@
                     </div>
                 </div>
 
-                <!-- NEW: Card 6: Explain -->
-                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="this.children[0].classList.toggle('rotate-y-180')">
+                <!-- Card 6: Explain -->
+                <div class="perspective shrink-0 w-[85%] h-[240px] snap-center cursor-pointer" onclick="flipCardAndPlaySound(this)">
                     <div class="relative w-full h-full preserve-3d transition-transform duration-700 shadow-sm rounded-[2rem]">
                         <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-[#FCF4E6] to-[#F2DFB3]/40 rounded-[2rem] p-8 border border-white flex flex-col justify-center items-center text-center">
                             <span class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mb-4">When you feel defensive...</span>
@@ -205,23 +226,23 @@
             
             <div class="space-y-3">
                 <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
-                    <input type="checkbox">
+                    <input type="checkbox" onchange="playTapSound(this)">
                     <span class="text-sm text-stone-700">Name 5 things you can <strong class="font-bold text-stone-900">see</strong></span>
                 </label>
                 <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
-                    <input type="checkbox">
+                    <input type="checkbox" onchange="playTapSound(this)">
                     <span class="text-sm text-stone-700">Touch 4 <strong class="font-bold text-stone-900">textures</strong> around you</span>
                 </label>
                 <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
-                    <input type="checkbox">
+                    <input type="checkbox" onchange="playTapSound(this)">
                     <span class="text-sm text-stone-700">Listen for 3 <strong class="font-bold text-stone-900">sounds</strong></span>
                 </label>
                 <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
-                    <input type="checkbox">
+                    <input type="checkbox" onchange="playTapSound(this)">
                     <span class="text-sm text-stone-700">Notice 2 things you can <strong class="font-bold text-stone-900">smell</strong></span>
                 </label>
                 <label class="flex items-center space-x-4 p-4 bg-white/60 rounded-2xl cursor-pointer hover:bg-white transition border border-white shadow-sm">
-                    <input type="checkbox">
+                    <input type="checkbox" onchange="playTapSound(this)">
                     <span class="text-sm text-stone-700">Acknowledge 1 thing you <strong class="font-bold text-stone-900">taste</strong></span>
                 </label>
             </div>
@@ -256,8 +277,59 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Scripts for Sound and Scrolling -->
     <script>
+        // --- AUDIO SETUP ---
+        const chimeSound = document.getElementById('sound-chime');
+        const tapSound = document.getElementById('sound-tap');
+        const brownNoise = document.getElementById('sound-brown-noise');
+        
+        // Lower the volume so it's gentle
+        chimeSound.volume = 0.2;
+        tapSound.volume = 0.3;
+        brownNoise.volume = 0.5; // Ambient background volume
+        
+        let isNoisePlaying = false;
+
+        // Toggle Brown Noise
+        function toggleBrownNoise() {
+            const btn = document.getElementById('noise-toggle');
+            if (isNoisePlaying) {
+                brownNoise.pause();
+                btn.innerHTML = '<span class="text-sm">🎧</span> Brown Noise: Off';
+                btn.classList.remove('bg-[#A3B1A6]', 'text-white');
+                btn.classList.add('bg-stone-200/60', 'text-stone-600');
+            } else {
+                brownNoise.play().catch(e => console.log("Audio blocked. Upload brown_noise.mp3 to GitHub to fix."));
+                btn.innerHTML = '<span class="text-sm">🎧</span> Brown Noise: On';
+                btn.classList.remove('bg-stone-200/60', 'text-stone-600');
+                btn.classList.add('bg-[#A3B1A6]', 'text-white');
+            }
+            isNoisePlaying = !isNoisePlaying;
+        }
+
+        // Function to flip the card AND play sound
+        function flipCardAndPlaySound(cardElement) {
+            // Flip the card visually
+            cardElement.children[0].classList.toggle('rotate-y-180');
+            
+            // Play the chime (reset time to 0 so it can play rapidly if tapped twice)
+            chimeSound.currentTime = 0;
+            chimeSound.play().catch(e => console.log("Audio blocked. Upload chime.mp3 to GitHub to fix."));
+            
+            // Add a tiny vibration if on a phone!
+            if (navigator.vibrate) navigator.vibrate(15);
+        }
+
+        // Function for checkboxes
+        function playTapSound(checkbox) {
+            if (checkbox.checked) {
+                tapSound.currentTime = 0;
+                tapSound.play().catch(e => console.log("Audio blocked. Upload tap.mp3 to GitHub to fix."));
+                if (navigator.vibrate) navigator.vibrate(10);
+            }
+        }
+
         // Smooth scroll for the flip deck
         function scrollDeck(direction) {
             const container = document.getElementById('flip-deck-container');
@@ -267,5 +339,4 @@
         }
     </script>
 </body>
-
 </html>
