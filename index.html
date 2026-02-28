@@ -64,8 +64,8 @@
 <body class="antialiased min-h-screen flex flex-col items-center p-4 md:p-12 overflow-x-hidden">
 
     <!-- HIDDEN AUDIO ELEMENTS -->
-    <!-- Brown noise set to loop indefinitely -->
-    <audio id="sound-brown-noise" preload="auto" loop>
+    <!-- Brown noise set to loop indefinitely. crossorigin is added for Web Audio API support on iOS -->
+    <audio id="sound-brown-noise" preload="auto" loop crossorigin="anonymous">
         <source src="brown_noise.mp3" type="audio/mpeg">
     </audio>
 
@@ -73,7 +73,6 @@
     <header class="text-center w-full max-w-md mb-8 mt-6 flex flex-col items-center relative">
         
         <!-- The Uploaded Watercolor Graphic -->
-        <!-- Just name your image "logo.png" when you upload it to GitHub! -->
         <img src="logo.png" alt="Unfolding Girl" class="w-40 h-40 blend-graphic opacity-90 mb-2 drop-shadow-sm transition-transform duration-700 hover:scale-105" onerror="this.style.display='none'">
         
         <h2 class="text-[10px] uppercase tracking-[0.3em] text-stone-400 font-bold mb-3 mt-4">Trigger Calm</h2>
@@ -283,11 +282,41 @@
     <script>
         // --- AUDIO SETUP ---
         const brownNoise = document.getElementById('sound-brown-noise');
-        brownNoise.volume = 0.5; // Ambient background volume
         let isNoisePlaying = false;
+        
+        // Setup Web Audio API variables for the volume booster
+        let audioCtx;
+        let gainNode;
+
+        // Function to initialize the volume booster (Must be called after user interaction)
+        function initAudioBooster() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                
+                // Create the audio source and the gain (volume) node
+                const track = audioCtx.createMediaElementSource(brownNoise);
+                gainNode = audioCtx.createGain();
+                
+                // --- THIS IS THE VOLUME BOOSTER ---
+                // 1.0 is normal volume. 3.0 makes it 3x louder to fight the iPhone's low default.
+                gainNode.gain.value = 3.0; 
+                
+                // Connect everything together
+                track.connect(gainNode).connect(audioCtx.destination);
+            }
+        }
 
         // Toggle Brown Noise
         function toggleBrownNoise() {
+            // Initialize the booster the first time they tap
+            initAudioBooster();
+            
+            // Required for iOS to resume AudioContext
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
             const btn = document.getElementById('noise-toggle');
             if (isNoisePlaying) {
                 brownNoise.pause();
