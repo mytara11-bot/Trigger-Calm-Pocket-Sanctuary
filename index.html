@@ -10,12 +10,23 @@
         
         body { 
             font-family: 'Nunito', sans-serif; 
-            background-color: #F4F2F0; 
+            /* Soft moving pastel gradient (Pink, Purple, Blue, Green) */
+            background: linear-gradient(135deg, #Fdfbfb, #F5E6E8, #F3EBF5, #E6F0F5, #E6EBE7, #Fdfbfb);
+            background-size: 400% 400%;
+            /* Smoothly animates the entire page background to match the breathing cycle */
+            animation: aurora-breathe 16s ease-in-out infinite;
             color: #4A4A4A;
         }
         h1, h2, h3, .serif { font-family: 'Lora', serif; }
         
         .text-brand-dark { color: #1A111A; } 
+        
+        /* Pastel Aurora Animation (Synced with Box Breath) */
+        @keyframes aurora-breathe {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         
         .glass-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%);
